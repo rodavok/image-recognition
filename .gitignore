@@ -1,0 +1,40 @@
+# Claude
+CLAUDE.md
+
+# Data and models
+data/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+*.log
+runs/
+wandb/
+mlruns/
+outputs/

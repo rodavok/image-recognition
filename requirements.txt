@@ -1,0 +1,7 @@
+torch>=2.0
+torchvision>=0.15
+timm>=0.9
+Pillow>=10.0
+tqdm
+matplotlib
+mlflow>=2.0
