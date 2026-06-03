@@ -53,7 +53,7 @@ def organize_dataset(raw_dir: Path, output_dir: Path, train_ratio: float = 0.8):
         (train_dir / class_name).mkdir(exist_ok=True)
         (val_dir / class_name).mkdir(exist_ok=True)
 
-        images = list(class_dir.glob("*.jpg"))
+        images = sorted(class_dir.glob("*.jpg"))
         split_idx = int(len(images) * train_ratio)
 
         for img in images[:split_idx]:

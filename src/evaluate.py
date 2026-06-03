@@ -61,7 +61,8 @@ def main():
     parser.add_argument('--checkpoint', type=str, required=True, help='Path to checkpoint')
     parser.add_argument('--data', type=str, default=None, help='Path to evaluation data directory')
     parser.add_argument('--image', type=str, default=None, help='Path to single image')
-    parser.add_argument('--model', type=str, default='resnet50', help='Model architecture')
+    parser.add_argument('--model', type=str, default=None,
+                        help='Model architecture (defaults to the one saved in the checkpoint)')
     args = parser.parse_args()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -71,10 +72,11 @@ def main():
     checkpoint = torch.load(args.checkpoint, weights_only=False, map_location=device)
     classes = checkpoint['classes']
     num_classes = len(classes)
-    print(f'Loaded model with {num_classes} classes')
+    model_name = args.model or checkpoint.get('model_name', 'resnet50')
+    print(f'Loaded {model_name} with {num_classes} classes')
 
     # Create and load model
-    model = create_model(args.model, num_classes=num_classes, pretrained=False)
+    model = create_model(model_name, num_classes=num_classes, pretrained=False)
     model.load_state_dict(checkpoint['model_state_dict'])
     model = model.to(device)
 

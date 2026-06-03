@@ -54,12 +54,15 @@ def save_checkpoint(model, optimizer, epoch, path, **kwargs):
     }, path)
 
 
-def load_checkpoint(path, model, optimizer=None):
-    """Load model checkpoint."""
+def load_checkpoint(path, model, optimizer=None, scheduler=None):
+    """Load model checkpoint, returning the full checkpoint dict."""
     checkpoint = torch.load(path, weights_only=False)
     model.load_state_dict(checkpoint['model_state_dict'])
 
     if optimizer and 'optimizer_state_dict' in checkpoint:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-    return checkpoint.get('epoch', 0)
+    if scheduler and 'scheduler_state_dict' in checkpoint:
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+
+    return checkpoint

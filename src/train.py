@@ -110,8 +110,10 @@ def main():
 
     if args.resume:
         from model import load_checkpoint
-        start_epoch = load_checkpoint(args.resume, model, optimizer)
-        print(f'Resumed from epoch {start_epoch}')
+        checkpoint = load_checkpoint(args.resume, model, optimizer, scheduler)
+        start_epoch = checkpoint.get('epoch', 0)
+        best_acc = checkpoint.get('best_acc', 0)
+        print(f'Resumed from epoch {start_epoch} (best val acc so far: {best_acc:.4f})')
 
     # Training loop
     Path(args.checkpoint_dir).mkdir(exist_ok=True)
@@ -157,14 +159,16 @@ def main():
         save_checkpoint(
             model, optimizer, epoch + 1,
             os.path.join(args.checkpoint_dir, 'latest.pt'),
-            val_acc=val_acc, classes=classes,
+            val_acc=val_acc, best_acc=best_acc, classes=classes,
+            model_name=args.model, scheduler_state_dict=scheduler.state_dict(),
         )
 
         if is_best:
             save_checkpoint(
                 model, optimizer, epoch + 1,
                 os.path.join(args.checkpoint_dir, 'best.pt'),
-                val_acc=val_acc, classes=classes,
+                val_acc=val_acc, best_acc=best_acc, classes=classes,
+                model_name=args.model, scheduler_state_dict=scheduler.state_dict(),
             )
             print(f'New best accuracy: {val_acc:.4f}')
 
