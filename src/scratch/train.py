@@ -11,10 +11,11 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))  # src/ for data.py
+sys.path.insert(0, str(Path(__file__).parent))          # src/scratch/ for model.py
 from data import get_dataloaders
 
-from model import create_model, count_parameters, save_checkpoint
+from model import create_model, count_parameters, save_checkpoint, load_checkpoint
 
 
 def train_one_epoch(model, loader, criterion, optimizer, device):
@@ -84,10 +85,9 @@ def main():
     # 4. optimizer = AdamW(model.parameters(), lr=args.lr)
     #    Note: unlike Module 1 we pass ALL parameters — why?
     # 5. scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs)
+    model = create_model(num_classes).to(device)
     total, trainable = count_parameters(model)
     print(f'Parameters: {total:,} total, {trainable:,} trainable')
-
-    model = create_model(num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = AdamW(model.parameters(), lr=args.lr) #because we're training from scratch, not fine-tuning
     scheduler = CosineAnnealingLR(optimizer, T_max=args.epochs)
