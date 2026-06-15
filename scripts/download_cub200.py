@@ -12,18 +12,13 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 
 
 def download_file(url: str, dest: Path):
-    """Download with progress."""
+    """Download with progress using curl (handles servers that block urllib)."""
+    import subprocess
     print(f"Downloading {url}")
-
-    def progress(block_num, block_size, total_size):
-        downloaded = block_num * block_size
-        percent = min(100, downloaded * 100 // total_size)
-        mb = downloaded / (1024 * 1024)
-        total_mb = total_size / (1024 * 1024)
-        print(f"\r  {mb:.1f}/{total_mb:.1f} MB ({percent}%)", end="", flush=True)
-
-    urllib.request.urlretrieve(url, dest, progress)
-    print()
+    subprocess.run(
+        ["curl", "-L", "-A", "Mozilla/5.0", "--progress-bar", "-o", str(dest), url],
+        check=True,
+    )
 
 
 def extract_tarball(path: Path, dest: Path):
